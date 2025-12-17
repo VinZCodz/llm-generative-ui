@@ -1,0 +1,13 @@
+{
+    "name": "my-bun-container",
+    "image": "mcr.microsoft.com/devcontainers/universal",
+    "features": {},
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.formatOnSave": true
+            }            
+        }
+    },
+    "postCreateCommand": "npm install -g bun && cd server && bun install && touch .env"
+}
