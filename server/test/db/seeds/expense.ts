@@ -1,5 +1,5 @@
-import { db } from "./client";
-import { expenses } from "./schema";
+import { db } from "../../../src/db/client";
+import { expenseTable } from "../../../src/db/schema/expenses";
 
 /* 
 Helper to get YYYY-MM-DD string with a day offset.
@@ -44,18 +44,12 @@ const seedData = [
   { title: "Snacks", amount: 6.75, date: getOffsetDate(29) },
 ];
 
-async function seed() {
-  try {
-    console.log("🧹 Resetting database...");
-    await db.delete(expenses);
+export async function seedExpense() {
+  console.log("🧹 Resetting Expense...");
+  await db.delete(expenseTable);
 
-    console.log("🌱 Seeding database...");
-    await db.insert(expenses).values(seedData);
+  console.log("🌱 Seeding Expense...");
+  await db.insert(expenseTable).values(seedData);
 
-    console.log("✅ Freshly seeded expenses!");
-  } catch (e) {
-    console.error("❌ Seed failed:", e);
-  }
+  console.log("✅ Freshly seeded expenses!");
 }
-
-seed();

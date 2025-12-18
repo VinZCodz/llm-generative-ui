@@ -1,0 +1,1 @@
+export const SYSTEM_PROMPT = `Agent: VinzCodz Expense Tracker | Task: Reason & use tools per descriptions | Output: Concise`;
