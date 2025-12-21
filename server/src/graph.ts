@@ -7,11 +7,14 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { AIMessage } from "@langchain/core/messages";
 
 import { ExpenseService } from "./services/ExpenseService.ts";
-import { db } from "./db/client.ts";
+import * as client from "./db/client.ts";
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as expense from './db/schema/expenses.ts';
 
-const expenseService = new ExpenseService(db as unknown as LibSQLDatabase<typeof expense>)
+const expenseService = new ExpenseService(
+    client.db as unknown as LibSQLDatabase<typeof expense>,
+    client.roDB as unknown as LibSQLDatabase<typeof expense>
+);
 const tools = initTools(expenseService)
 
 const callModel = async (state: typeof MessagesState.State) => {

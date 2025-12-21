@@ -7,3 +7,10 @@ const turso = createClient({
 });
 
 export const db = drizzle(turso);
+
+const roTurso = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_RO_AUTH_TOKEN!,
+});
+
+export const roDB = drizzle(roTurso);

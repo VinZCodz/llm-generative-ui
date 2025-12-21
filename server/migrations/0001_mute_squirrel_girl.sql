@@ -1,0 +1,1 @@
+CREATE VIEW `ai_expense_view` AS select "id", "title", "amount", "date" from "expenses" where "expenses"."date" >= date('now', '-2 months');

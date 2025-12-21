@@ -8,6 +8,13 @@
       "when": 1765973400589,
       "tag": "0000_dapper_bastion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1766331890765,
+      "tag": "0001_mute_squirrel_girl",
+      "breakpoints": true
     }
   ]
 }

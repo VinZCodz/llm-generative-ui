@@ -3,7 +3,10 @@ import * as expense from '../db/schema/expenses.ts';
 import { sql } from 'drizzle-orm';
 
 export class ExpenseService {
-    constructor(private readonly db: LibSQLDatabase<typeof expense>) { }
+    constructor(
+        private readonly db: LibSQLDatabase<typeof expense>,
+        private readonly roDB: LibSQLDatabase<typeof expense>
+    ) { }
 
     public async addExpense(data: expense.InsertExpense) {
         await this.db.insert(expense.expenseTable).values(data);
