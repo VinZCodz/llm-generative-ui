@@ -10,7 +10,7 @@ export const initTools = (expenseService: ExpenseService) => {
 
             console.log("Adding Expense: ", { title, amount, date });//TODO: Use winston
 
-            await expenseService.addExpense({ title, amount, date });
+            await expenseService.add({ title, amount, date });
 
             return JSON.stringify({ status: 'success!' });
         },
@@ -29,25 +29,30 @@ export const initTools = (expenseService: ExpenseService) => {
         },
         {
             name: 'getExpenseSchema',
-            description: 'To get the schema structure of Expense table',
+            description: 'To get the schema structure of Expense view',
         });
 
     const getExpenses = tool(
-        async ({ query }) => {
-            return await expenseService.executeReadOnlyQuery(query);
+        async ({ query, maxNumberOfRecords }) => {
+            console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
+
+            return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
         },
         {
             name: "getExpenses",
-            description: 'To get a single or multiple Expense. Strictly read-only SQL SELECT statements allowed',
+            description: 'To get a single or multiple Expense, upto 2 months old only',
             schema: z.object({
-                query: z.string().describe('Read-only SQL SELECT query. Optimized for data retrieval'),
+                query: z.string().describe('Strictly Read-only SQL SELECT query. You may use joins, subqueries, and CTEs, but only referencing Expense view. Optimize query for effective data retrieval'),
+                maxNumberOfRecords: z.number().describe('Max number of rows needed to answer/estimate. Be mindful of user tokens')
             }),
         });
 
     return [
+        addExpense,
+
         getExpenseSchema,
         getExpenses,
 
-        addExpense,
+
     ]
 }

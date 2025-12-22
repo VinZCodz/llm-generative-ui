@@ -10,10 +10,12 @@ import { ExpenseService } from "./services/ExpenseService.ts";
 import * as client from "./db/client.ts";
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as expense from './db/schema/expenses.ts';
+import { SelectQueryGuard } from "./utils/SelectQueryGuard.ts";
 
 const expenseService = new ExpenseService(
     client.db as unknown as LibSQLDatabase<typeof expense>,
-    client.roDB as unknown as LibSQLDatabase<typeof expense>
+    client.roDB as unknown as LibSQLDatabase<typeof expense>,
+    new SelectQueryGuard()
 );
 const tools = initTools(expenseService)
 
@@ -47,5 +49,6 @@ const graph = new StateGraph(MessagesState)
     .addNode("toolNode", toolNode)
     .addEdge("__start__", "callModel")
     .addConditionalEdges("callModel", shouldContinue)
+    .addEdge("toolNode", "callModel")
 
 export const ExpenseTrackerAgent = graph.compile({ checkpointer: new MemorySaver() });

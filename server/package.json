@@ -26,6 +26,7 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "langchain": "^1.2.1",
+    "node-sql-parser": "^5.3.13",
     "zod": "^4.2.1"
   }
 }
