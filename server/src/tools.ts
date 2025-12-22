@@ -1,6 +1,7 @@
 import { tool } from "langchain";
 import { ExpenseService } from "./services/ExpenseService";
 import z from "zod";
+import { SQLValidationError } from "./errors/validation.error";
 
 export const initTools = (expenseService: ExpenseService) => {
 
@@ -25,25 +26,49 @@ export const initTools = (expenseService: ExpenseService) => {
 
     const getExpenseSchema = tool(
         () => {
-            return expenseService.getSchema();
+            const { viewName, columnInfo } = expenseService.getSchema();
+            console.log("Expense Metadata: ", { viewName, columnInfo });//TODO: Use winston
+
+            return `
+                    VIEW_NAME: ${viewName}
+                    COLUMNS:
+                    ${columnInfo}
+                    
+                    RULES:
+                    - Use ONLY the columns listed above.
+                    - Date format: YYYY-MM-DD.
+                    - You are restricted to the last 2 months of data.
+                    `
+                .trim();
         },
         {
             name: 'getExpenseSchema',
-            description: 'To get the schema structure of Expense view',
+            description: 'Provides the schema definition for expense table. Call before get operations on expense.'
         });
 
     const getExpenses = tool(
         async ({ query, maxNumberOfRecords }) => {
             console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
 
-            return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
+            try {
+                return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
+            } catch (error) {
+                //Important! catch only validation errors so llm can regenerate the query.
+                if (error instanceof SQLValidationError) {
+                    console.error("Query Validation Failed:", error.message);//TODO: Use winston
+                    return `Error executing query: ${error.message}. Fix the query accordingly and retry!`;
+                }
+                else {
+                    throw error;//Important! all the other errors are handled at global level.
+                }
+            }
         },
         {
             name: "getExpenses",
-            description: 'To get a single or multiple Expense, upto 2 months old only',
+            description: 'Queries a single/multiple Expense from view. Supports complex SQL (Aggregation, CTEs, self-joins). Needs database schema first to form the query',
             schema: z.object({
-                query: z.string().describe('Strictly Read-only SQL SELECT query. You may use joins, subqueries, and CTEs, but only referencing Expense view. Optimize query for effective data retrieval'),
-                maxNumberOfRecords: z.number().describe('Max number of rows needed to answer/estimate. Be mindful of user tokens')
+                query: z.string().describe('Strictly SQL SELECT query. Optimize query for effective data retrieval'),
+                maxNumberOfRecords: z.number().optional().default(20).describe('Number of rows to return for analysis. Be mindful of user tokens')
             }),
         });
 
