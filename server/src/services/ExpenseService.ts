@@ -17,14 +17,16 @@ export class ExpenseService {
     }
 
     public getSchema() {
+        console.log("test::", expenseView.aiExpenseView.$inferSelect);
         return {
-            viewName: expenseView.aiExpenseView._.name,
-            columnInfo: Object.entries(expenseView.aiExpenseView._.selectedFields)
-                .map(([name, col]) => {
-                    const type = (col as any).getSQLType?.() || 'unknown';
-                    return `- ${name} (${type})`;
-                })
-                .join('\n')
+            metadata:expenseView.aiExpenseView.$inferSelect
+            // viewName: expenseView.aiExpenseView._.name,
+            // columnInfo: Object.entries(expenseView.aiExpenseView._.selectedFields)
+            //     .map(([name, col]) => {
+            //         const type = (col as any).getSQLType?.() || 'unknown';
+            //         return `- ${name} (${type})`;
+            //     })
+            //     .join('\n')
         }
     }
 
