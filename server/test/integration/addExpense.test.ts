@@ -1,21 +1,16 @@
-import * as llmTools from '../../../src/tools.ts'
-import { createTestDb } from '../../db/client.ts';
-import { ExpenseService } from "../../../src/services/ExpenseService.ts";
-import { SelectQueryGuard } from '../../../src/utils/SelectQueryGuard.ts';
-import type { Client } from '@libsql/client';
+import * as llmTools from '../../src/tools.ts'
+import { testDb, testClient } from '../db/client.ts';
+import { ExpenseService } from "../../src/services/ExpenseService.ts";
+import { SelectQueryGuard } from '../../src/utils/SelectQueryGuard.ts';
 import type { StructuredTool } from 'langchain';
-import type { LibSQLDatabase } from 'drizzle-orm/libsql';
-import * as expense from '../../../src/db/schema/expenses.ts';
+import * as expense from '../../src/db/schema/expenses.ts';
 
 const toolName = 'addExpense';
 
 describe(`Integration Suite for tool: ${toolName} `, () => {
     let addExpenseTool: StructuredTool
-    let testClient: Client;
-    let testDb: LibSQLDatabase<typeof expense>;
 
     beforeAll(async () => {
-        ({ testDb, testClient } = await createTestDb());
         const expenseService = new ExpenseService(testDb, testDb, new SelectQueryGuard());
         const tools = llmTools.initTools(expenseService);
 

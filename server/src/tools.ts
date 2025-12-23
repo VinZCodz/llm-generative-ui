@@ -13,7 +13,7 @@ export const initTools = (expenseService: ExpenseService) => {
 
             await expenseService.add({ title, amount, date });
 
-            return JSON.stringify({ status: 'success' });
+            return { status: 'success' };
         },
         {
             name: "addExpense",
