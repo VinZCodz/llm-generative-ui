@@ -7,21 +7,22 @@ import { SQLValidationError } from '../errors/validation.error.ts';
 import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 export class ExpenseService {
+    private readonly viewConfig;
     constructor(
         private readonly db: LibSQLDatabase<typeof expense>,
         private readonly roDB: LibSQLDatabase<typeof expense>,
         private readonly validator: SelectQueryGuard
-    ) { }
+    ) {
+        this.viewConfig = getViewConfig(expenseView.aiExpenseView);
+    }
 
     public async add(data: expense.InsertExpense) {
         await this.db.insert(expense.expenseTable).values(data);
     }
 
     public getSchema() {
-        const viewConfig = getViewConfig(expenseView.aiExpenseView);
-
-        const name = viewConfig.name;
-        const columns = Object.entries(viewConfig.selectedFields).map(([tsKey, col]: [string, any]) =>
+        const name = this.viewConfig.name;
+        const columns = Object.entries(this.viewConfig.selectedFields).map(([tsKey, col]: [string, any]) =>
             `${col.name || tsKey} ${col.getSQLType() || col.dataType}`
         );
 
@@ -29,7 +30,7 @@ export class ExpenseService {
     }
 
     public async executeSelectQuery(rawQuery: string, maxNumberOfRecords = 100) {
-        const validation = this.validator.validate(rawQuery, [expenseView.aiExpenseView._.name]);
+        const validation = this.validator.validate(rawQuery, [this.viewConfig.name]);
 
         console.log({ validation });
 

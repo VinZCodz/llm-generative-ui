@@ -33,7 +33,7 @@ export const initTools = (expenseService: ExpenseService) => {
 
     const getExpenses = tool(
         async ({ query, maxNumberOfRecords }) => {
-            console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
+            // console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
 
             try {
                 return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
@@ -41,7 +41,11 @@ export const initTools = (expenseService: ExpenseService) => {
                 //Important! catch only validation errors so llm can regenerate the query.
                 if (error instanceof SQLValidationError) {
                     console.error("Query Validation Failed:", error.message);//TODO: Use winston
-                    return `Error executing query: ${error.message}. Fix the query accordingly and retry!`;
+                    return {
+                        status: 'error',
+                        message: `Query Validation Failed: ${error.message}`,
+                        suggestion: "Fix the error accordingly and Retry"
+                    };
                 }
                 else {
                     throw error;//Important! all the other errors are handled at global level.
