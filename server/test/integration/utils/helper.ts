@@ -1,4 +1,4 @@
-import { testDb, testClient } from '../../db/client';
+import { testDb, testClient } from '../../db/testClient.ts';
 import { ExpenseService } from '../../../src/services/ExpenseService';
 import { SelectQueryGuard } from '../../../src/utils/SelectQueryGuard';
 import * as llmTools from '../../../src/tools';
