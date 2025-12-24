@@ -1,6 +1,5 @@
 import { testDb, testClient } from './client';
 import { migrate } from 'drizzle-orm/libsql/migrator';
-import path from 'path';
 
 export async function setup() {
     console.log('⏳ Migrating Test Database...');

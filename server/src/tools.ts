@@ -25,27 +25,10 @@ export const initTools = (expenseService: ExpenseService) => {
         });
 
     const getExpenseSchema = tool(
-        () => {
-            console.log("getExpenseSchema");
-            return expenseService.getSchema();
-            // const { viewName, columnInfo } = expenseService.getSchema();
-            // console.log("Expense Metadata: ", { viewName, columnInfo });//TODO: Use winston
-
-            // return `
-            //         VIEW_NAME: ${viewName}
-            //         COLUMNS:
-            //         ${columnInfo}
-                    
-            //         RULES:
-            //         - Use ONLY the columns listed above.
-            //         - Date format: YYYY-MM-DD.
-            //         - You are restricted to the last 2 months of data.
-            //         `
-           //     .trim();
-        },
+        () => expenseService.getSchema(),
         {
             name: 'getExpenseSchema',
-            description: 'Provides the schema metadata for expense table. Call before get operations on expense.'
+            description: 'Provides the schema metadata for expense table. Call before get operations on expense'
         });
 
     const getExpenses = tool(

@@ -1,9 +1,10 @@
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as expense from '../db/schema/expenses.ts';
 import * as expenseView from '../db/schema/ai_expense_view.ts';
-import { sql } from 'drizzle-orm';
+import { getViewSelectedFields, sql } from 'drizzle-orm';
 import type { SelectQueryGuard } from '../utils/SelectQueryGuard.ts';
 import { SQLValidationError } from '../errors/validation.error.ts';
+import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 export class ExpenseService {
     constructor(
@@ -17,17 +18,14 @@ export class ExpenseService {
     }
 
     public getSchema() {
-        console.log("test::", expenseView.aiExpenseView.$inferSelect);
-        return {
-            metadata:expenseView.aiExpenseView.$inferSelect
-            // viewName: expenseView.aiExpenseView._.name,
-            // columnInfo: Object.entries(expenseView.aiExpenseView._.selectedFields)
-            //     .map(([name, col]) => {
-            //         const type = (col as any).getSQLType?.() || 'unknown';
-            //         return `- ${name} (${type})`;
-            //     })
-            //     .join('\n')
-        }
+        const viewConfig = getViewConfig(expenseView.aiExpenseView);
+
+        const name = viewConfig.name;
+        const columns = Object.entries(viewConfig.selectedFields).map(([tsKey, col]: [string, any]) =>
+            `${col.name || tsKey} ${col.getSQLType() || col.dataType}`
+        );
+
+        return { name, columns }
     }
 
     public async executeSelectQuery(rawQuery: string, maxNumberOfRecords = 100) {
