@@ -5,13 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "",
-    
     "console": "bun test/consoleChat.ts",
-
     "test": "vitest",
-    "test:ui": "vitest --ui", 
+    "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "bun test/db/seeds/index.ts",
@@ -19,6 +16,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@vitest/coverage-v8": "4.0.16",
     "drizzle-kit": "^0.31.8",
     "vitest": "^4.0.16"
   },

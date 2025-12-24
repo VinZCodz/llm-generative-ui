@@ -1,7 +1,7 @@
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as expense from '../db/schema/expenses.ts';
 import * as expenseView from '../db/schema/ai_expense_view.ts';
-import { getViewSelectedFields, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import type { SelectQueryGuard } from '../utils/SelectQueryGuard.ts';
 import { SQLValidationError } from '../errors/validation.error.ts';
 import { getViewConfig } from 'drizzle-orm/sqlite-core';

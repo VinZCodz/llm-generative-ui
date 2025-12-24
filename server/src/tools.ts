@@ -50,7 +50,7 @@ export const initTools = (expenseService: ExpenseService) => {
         },
         {
             name: "getExpenses",
-            description: 'Queries a single/multiple Expense from view. Supports complex SQL (Aggregation, CTEs, self-joins). Needs database schema first to form the query',
+            description: 'Queries a single/multiple Expense from view. Supports complex SQL (Aggregation, CTEs, Self-Joins). Needs database schema first to form the query',
             schema: z.object({
                 query: z.string().describe('Strictly SQL SELECT query. Optimize query for effective data retrieval'),
                 maxNumberOfRecords: z.number().optional().default(20).describe('Number of rows to return for analysis. Be mindful of user tokens')
@@ -62,7 +62,5 @@ export const initTools = (expenseService: ExpenseService) => {
 
         getExpenseSchema,
         getExpenses,
-
-
     ]
 }
