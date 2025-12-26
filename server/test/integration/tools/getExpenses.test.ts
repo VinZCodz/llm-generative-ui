@@ -1,5 +1,5 @@
-import { expenseTable } from '../../src/db/schema/expenses.ts';
-import { setupToolIntegration } from './utils/helper.ts';
+import { expenseTable } from '../../../src/db/schema/expenses.ts';
+import { setupToolIntegration } from '../utils/helper.ts';
 
 const toolName = 'getExpenses';
 

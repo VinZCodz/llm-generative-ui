@@ -1,4 +1,4 @@
-import { testDb, testClient } from './testClient';
+import { testDb, testClient } from '../../db/testClient';
 import { migrate } from 'drizzle-orm/libsql/migrator';
 
 export async function setup() {

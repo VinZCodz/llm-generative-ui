@@ -1,4 +1,4 @@
-import { setupToolIntegration } from './utils/helper.ts';
+import { setupToolIntegration } from '../utils/helper.ts';
 
 const toolName = 'addExpense';
 

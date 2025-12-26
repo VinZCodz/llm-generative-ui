@@ -1,10 +1,40 @@
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 
-export default defineConfig({
-  test: {
-    globals: true, // This allows you to use 'describe', 'it', 'expect' without importing them
-    environment: 'node',
-    globalSetup: './test/db/globalSetup.ts', // Migrations for test db will happen here
-    include: ['**/*.{test,spec}.ts'],
-  },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  
+  return {
+    test: {
+      // This allows you to use 'describe', 'it', 'expect' without importing them
+      globals: true,
+      environment: 'node',
+
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: 'integration-tools',
+            include: ['test/integration/tools/**/*.{test,spec}.ts'],
+
+            // Important! Runs once total before the entire tool suite. Runs in the Node.js process before the environment is created. Used: Starting/Stopping a database or a Docker container. Eg, Now my migrations for test db will happen here.
+            globalSetup: ['./test/integration/tools/globalSetup.ts'], 
+
+            // setupFiles: ['./vitest.setup.ts'], //Important! Runs once per test file. Environment Runs inside the same environment as your tests (e.g., jsdom). Use Case  Setting env vars, mocking APIs, initializing UI frameworks. Give Path to setup file
+          },
+        },
+        {
+          extends: true,
+          test: {
+            name: 'integration-infrastructure',
+            include: ['test/integration/infrastructure/**/*.{test,spec}.ts'],
+
+            env: env, // Injected here
+            // globalSetup: ['./test/db/globalSetup.ts'],
+            // setupFiles: ['./test/integration.setup.ts'],
+          },
+        },
+      ],
+    },
+  };
 });

@@ -1,5 +1,5 @@
-import { setupToolIntegration } from './utils/helper.ts';
-import * as expenseView from '../../src/db/schema/ai_expense_view.ts';
+import { setupToolIntegration } from '../utils/helper.ts';
+import * as expenseView from '../../../src/db/schema/ai_expense_view.ts';
 import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 const toolName = 'getExpenseSchema';

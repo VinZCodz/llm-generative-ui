@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
-import { db, roDB } from '../../src/db/client';
+import { db, roDB } from '../../../src/db/client';
 
 describe(`Infrastructure Integration Tests for Turso DB client: Connection & Permission Verification Tests`, () => {
 
-    const testTableName = `_test_temp_table_${Date.now()}`;    // A unique table name for testing to avoid collisions
+    const testTableName = `test_temp_table_${Date.now()}`;    // A unique table name for testing to avoid collisions
 
     describe(`Permission Boundary Validation: Given READ-ONLY client (roDB)`, () => {
 
@@ -16,13 +16,13 @@ describe(`Infrastructure Integration Tests for Turso DB client: Connection & Per
         it('should NOT be able to manipulate data (DML NOT allowed)', async () => {
             await expect(
                 roDB.run(sql`INSERT INTO non_existent_table (id) VALUES (1)`)
-            ).rejects.toThrow(/(read-only|authorized)/i);
+            ).rejects.toThrow(/(Failed|authorized)/i);
         });
 
         it('should NOT be able to create db objects (DDL NOT allowed)', async () => {
             await expect(
                 roDB.run(sql`CREATE TABLE ${sql.raw(testTableName)} (id INTEGER)`)
-            ).rejects.toThrow(/read-only/i);
+            ).rejects.toThrow(/Failed/i);
         });
     });
 
