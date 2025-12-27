@@ -2,10 +2,8 @@ import { sql } from "drizzle-orm";
 import { db, roDB } from '../../../src/db/client';
 
 describe(`Infrastructure Integration Tests for Turso DB client: Connection & Permission Verification Tests`, () => {
-
-    const testTableName = `test_temp_table_${Date.now()}`;    // A unique table name for testing to avoid collisions
-
     describe(`Permission Boundary Validation: Given READ-ONLY client (roDB)`, () => {
+        const testTableName = `_test_temp_table_${Date.now()}`;    // A unique table name for testing to avoid collisions
 
         it('should fetch records from db (DQL allowed)', async () => {
             const result = await roDB.run(sql`SELECT 1`);
@@ -24,10 +22,19 @@ describe(`Infrastructure Integration Tests for Turso DB client: Connection & Per
                 roDB.run(sql`CREATE TABLE ${sql.raw(testTableName)} (id INTEGER)`)
             ).rejects.toThrow(/Failed/i);
         });
+
+        afterAll(async () => {
+            try {
+                await db.run(sql.raw(`DROP TABLE IF EXISTS ${testTableName}`));
+            } catch (e) {
+                console.error("Cleanup failed, manual intervention might be needed:", e);
+            }
+        });
     });
 
-    describe(`Given FULL client (db)`, () => {
-        
+    describe(`Given FULL db client`, () => {
+        const testTableName = `_test_temp_table_${Date.now()}`;
+
         it('should create db objects (DDL allowed)', async () => {
             const result = await db.run(sql`CREATE TABLE ${sql.raw(testTableName)} (id INTEGER PRIMARY KEY, val TEXT)`);
             expect(result).toBeDefined();
@@ -43,9 +50,19 @@ describe(`Infrastructure Integration Tests for Turso DB client: Connection & Per
             const result = await db.run(sql`SELECT * FROM ${sql.raw(testTableName)} LIMIT 1`);
             expect(result.rows).toBeDefined();
         });
+
+        afterAll(async () => {
+            try {
+                await db.run(sql.raw(`DROP TABLE IF EXISTS ${testTableName}`));
+            } catch (e) {
+                console.error("Cleanup failed, manual intervention might be needed:", e);
+            }
+        });
     });
 
     describe("Transaction Integrity & Rollback (Atomic Operations)", () => {
+        const testTableName = `_test_temp_table_${Date.now()}`;    // A unique table name for testing to avoid collisions
+
         it("should completely rollback changes when a transaction fails", async () => {
             // 1. Create a table
             await db.run(sql.raw(`CREATE TABLE ${testTableName} (id INTEGER PRIMARY KEY, msg TEXT)`));
@@ -64,6 +81,14 @@ describe(`Infrastructure Integration Tests for Turso DB client: Connection & Per
             const result = await db.run(sql.raw(`SELECT count(*) as count FROM ${testTableName}`));
             expect(result.rows[0]!.count).toBe(0);
         });
+
+        afterAll(async () => {
+            try {
+                await db.run(sql.raw(`DROP TABLE IF EXISTS ${testTableName}`));
+            } catch (e) {
+                console.error("Cleanup failed, manual intervention might be needed:", e);
+            }
+        });
     });
 
     describe("Connection & Timeout Performance", () => {
@@ -72,13 +97,5 @@ describe(`Infrastructure Integration Tests for Turso DB client: Connection & Per
             const results = await Promise.all(queries);
             expect(results.length).toBe(10);
         });
-    });
-
-    afterAll(async () => {
-        try {
-            await db.run(sql.raw(`DROP TABLE IF EXISTS ${testTableName}`));
-        } catch (e) {
-            console.error("Cleanup failed, manual intervention might be needed:", e);
-        }
     });
 });

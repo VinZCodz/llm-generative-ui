@@ -33,7 +33,7 @@ export const initTools = (expenseService: ExpenseService) => {
 
     const getExpenses = tool(
         async ({ query, maxNumberOfRecords }) => {
-            // console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
+            console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
 
             try {
                 return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
