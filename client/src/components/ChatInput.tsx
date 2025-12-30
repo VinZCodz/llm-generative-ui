@@ -1,4 +1,3 @@
-// src/components/ChatInput.tsx
 "use client";
 import { useRef, useEffect } from "react";
 import { ArrowUp } from "lucide-react";

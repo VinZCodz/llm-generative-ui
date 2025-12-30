@@ -1,4 +1,3 @@
-// src/components/ChatBubble.tsx
 import { motion } from "framer-motion";
 import { Bot, User, CheckCircle2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
