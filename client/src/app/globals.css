@@ -25,3 +25,24 @@ body {
   background: #27272a;
   border-radius: 10px;
 }
+
+@utility wiggle-gentle {
+  --wiggle-deg: 3deg;
+}
+
+@utility wiggle-wild {
+  --wiggle-deg: 20deg;
+}
+
+@theme {
+  --animate-wiggle: wiggle 0.5s ease-in-out infinite;
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(calc(var(--wiggle-deg, 10deg) * -1));
+    }
+    50% {
+      transform: rotate(var(--wiggle-deg, 10deg));
+    }
+  }
+}

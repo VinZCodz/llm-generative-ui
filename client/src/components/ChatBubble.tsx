@@ -17,7 +17,7 @@ export function ChatBubble({ message }: { message: any }) {
           "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-1 border",
           isBot ? "bg-zinc-900 border-zinc-800 text-blue-400" : "bg-blue-600 border-blue-500 text-white"
         )}>
-          {isBot ? <Bot size={16} /> : <User size={16} />}
+          {isBot ? <Bot size={16} className="animate-pulse hover:animate-wiggle"/> : <User size={16} className="hover:animate-wiggle"/>}
         </div>
 
         <div className="space-y-2">
