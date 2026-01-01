@@ -1,9 +1,10 @@
-import { setupToolIntegration } from '../utils/helper.ts';
+import { getTool } from '../utils/helper.ts';
+import { testDb } from './tools.setup.ts';
 
 const toolName = 'addExpense';
 
 describe(`Integration Suite for tool: ${toolName} `, () => {
-    const { tool, testDb } = setupToolIntegration(toolName);
+    const tool = getTool(toolName);
 
     it('should save expense to db', async () => {
         // Arrange

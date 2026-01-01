@@ -1,11 +1,11 @@
-import { setupToolIntegration } from '../utils/helper.ts';
+import { getTool } from '../utils/helper.ts';
 import * as expenseView from '../../../src/db/schema/ai_expense_view.ts';
 import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 const toolName = 'getExpenseSchema';
 
 describe(`Integration Suite for tool: ${toolName} `, () => {
-    const { tool } = setupToolIntegration(toolName);
+    const tool = getTool(toolName);
 
     it('should get the expense schema', async () => {
         // Arrange

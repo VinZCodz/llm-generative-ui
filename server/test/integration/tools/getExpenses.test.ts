@@ -1,5 +1,6 @@
 import { expenseTable } from '../../../src/db/schema/expenses.ts';
-import { setupToolIntegration } from '../utils/helper.ts';
+import { getTool } from '../utils/helper.ts';
+import { testDb } from './tools.setup.ts';
 
 const toolName = 'getExpenses';
 
@@ -11,7 +12,7 @@ const toolName = 'getExpenses';
  * Efficiency: LLMs are restricted by date windows and result limits.
  */
 describe(`Integration Suite for tool: ${toolName} `, () => {
-    const { tool, testDb } = setupToolIntegration(toolName);
+    const tool = getTool(toolName);
 
     describe(`Given Read-Only Select Query on Whitelisted View`, () => {
         it('should fetch records from db', async () => {
