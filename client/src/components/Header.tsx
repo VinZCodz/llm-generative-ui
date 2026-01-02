@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { siteConfig } from "@/config/site";
 import { Wallet, Circle, Landmark, AlertCircle } from "lucide-react";
+import Image from 'next/image';
 
 export function Header({ messageCount }: { messageCount: number }) {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -75,10 +76,8 @@ export function Header({ messageCount }: { messageCount: number }) {
             onClick={() => setShowConfirm(true)}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer group/btn"
           >
-            <div className="bg-blue-600 p-1.5 rounded-lg shadow-lg shadow-blue-500/20 group-active/btn:scale-90 transition-transform">
-              <Landmark size={18} className="text-white hover:animate-wiggle" />
-            </div>
-            <span className="text-lg font-bold tracking-tighter bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+            <Image src={siteConfig.ogImage} alt="Logo" width={25} height={25} priority className="hover:animate-wiggle rounded" />
+           <span className="text-lg font-bold tracking-tighter bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
               {siteConfig.name}
             </span>
           </button>
@@ -94,10 +93,10 @@ export function Header({ messageCount }: { messageCount: number }) {
                 : "bg-zinc-900/50 border-zinc-800 hover:border-blue-500/50"
               }`}
           >
-            <Wallet
+            <Landmark
               size={22}
               className={`transition-transform duration-500 ${isScrolled ? "rotate-0" : "rotate-360"
-                } animate-wiggle ${hasNewMessage ? "text-blue-400 wiggle-wild" : "text-blue-500 wiggle-gentle"}`}
+                } hover:animate-wiggle ${hasNewMessage ? "text-blue-400" : "text-blue-500"}`}
             />
 
             {/* Notification Dot */}
