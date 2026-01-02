@@ -9,6 +9,7 @@
     "test": "vitest",
     "test:tools": "vitest --project integration-tools",
     "test:infra": "vitest --project integration-infrastructure",
+    "test:llm": "vitest --project integration-llm",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "db:generate": "drizzle-kit generate",

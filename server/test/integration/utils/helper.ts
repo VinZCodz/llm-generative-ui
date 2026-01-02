@@ -1,24 +1,10 @@
-import { testDb, testClient } from '../../db/testClient.ts';
-import { ExpenseService } from '../../../src/services/ExpenseService';
-import { SelectQueryGuard } from '../../../src/utils/SelectQueryGuard';
-import * as llmTools from '../../../src/tools';
-import * as expense from '../../../src/db/schema/expenses.ts';
 import type { StructuredTool } from 'langchain';
+import { tools } from '../tools/tools.setup.ts';
 
-export const setupToolIntegration = (toolName: string) => {
-    const expenseService = new ExpenseService(testDb, testDb, new SelectQueryGuard());
-    const tools = llmTools.initTools(expenseService);
+export const getTool = (toolName: string) => {
     const tool = tools.find(t => t.name === toolName) as StructuredTool;
-
+    
     if (!tool) throw new Error(`${toolName} tool not found!`);
 
-    beforeEach(async () => {
-        await testDb.delete(expense.expenseTable);
-    });
-
-    afterAll(async () => {
-        await testClient.close();
-    });
-
-    return { tool, testDb };
+    return tool;
 }
