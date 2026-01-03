@@ -16,7 +16,7 @@ export function SuggestionCard({ messageCount, onClick }: SuggestionCardProps) {
     <div className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="text-center mb-8">
         <div className="flex items-center justify-center animate-pulse">
-          <Image src={siteConfig.ogImage} alt="Logo" width={100} height={100} priority />
+          <Image src={siteConfig.ogImage} alt="Logo" width={100} height={100} priority className="rounded-xl"/>
         </div>
         <h2 className="text-xl font-bold text-zinc-100 mb-2">
           Master your money with {siteConfig.name}
