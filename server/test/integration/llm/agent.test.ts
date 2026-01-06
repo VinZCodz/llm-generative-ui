@@ -31,10 +31,9 @@ describe(`LLM Agent E2E`, () => {
 
         }, 20000);
 
-        it.todo('should call tool getExpenseSchema', async () => {
+        it('should call tool getExpenseSchema', async () => {
             const userInput = "What details can you track for my expenses?";
 
-            // 1. Run Agent
             const result = await ExpenseAgent.invoke({
                 messages: [new HumanMessage(userInput)]
             }, {
@@ -43,7 +42,7 @@ describe(`LLM Agent E2E`, () => {
 
             const agentResponse = result.messages.at(-1)!.content as string;
 
-            // 2. We don't need a DB record check here, but we check the Judge
+            // We don't need a DB record check here, but we check the Judge
             // to see if the agent correctly listed the schema fields (e.g., amount, title)
             const evalResult = await evaluateAgent(
                 userInput,
