@@ -25,7 +25,11 @@ describe(`LLM Agent E2E`, () => {
             expect(Number(record!.amount)).toBe(12);
 
             // LLM Judge Check
-            const evalResult = await evaluateAgent(userInput, record, agentResponse);
+            const evalResult = await evaluateAgent(
+                userInput,
+                record,
+                agentResponse,
+                "Was the DB record inserted? and did the agent answer the user?");
 
             expect(evalResult.pass, `Judge Failed: ${evalResult.reason}`).toBe(true);
 
@@ -46,8 +50,9 @@ describe(`LLM Agent E2E`, () => {
             // to see if the agent correctly listed the schema fields (e.g., amount, title)
             const evalResult = await evaluateAgent(
                 userInput,
-                { info: "Agent should explain schema fields" },
-                agentResponse
+                null,
+                agentResponse,
+                "Did the LLM extract fields and explained the user?"
             );
 
             expect(evalResult.pass, `Judge Failed: ${evalResult.reason}`).toBe(true);
@@ -55,36 +60,31 @@ describe(`LLM Agent E2E`, () => {
             expect(agentResponse.toLowerCase()).toContain("amount");
         }, 20000);
 
-        it.todo('should call tool getExpenses', async () => {
-            // 1. Seed the DB with data
-            await testDb.insert(expenseTable).values([
+        it('should call tool getExpenses', async () => {
+            const expenses = [
                 { amount: 50, title: "Groceries", date: new Date().toISOString().split('T')[0]! },
                 { amount: 15, title: "Netflix", date: new Date().toISOString().split('T')[0]! }
-            ]);
+            ];
+            await testDb.insert(expenseTable).values(expenses);
 
             const userInput = "How much did I spend in total so far?";
-
-            // 2. Run Agent
             const result = await ExpenseAgent.invoke({
                 messages: [new HumanMessage(userInput)]
             });
 
             const agentResponse = result.messages.at(-1)!.content as string;
 
-            // 3. Evaluation
+            const totalExpected = expenses.reduce((sum, current) => sum + current.amount, 0);
             const evalResult = await evaluateAgent(
                 userInput,
-                { totalExpected: 65, currency: "USD" },
-                agentResponse
+                { totalExpected },
+                agentResponse,
+                "Did the LLM calculate expenses correctly and answered the user?"
             );
 
             expect(evalResult.pass, `Judge Failed: ${evalResult.reason}`).toBe(true);
-            expect(agentResponse).toContain("65"); // Simple deterministic check
+            expect(agentResponse).toContain(totalExpected); // Simple deterministic check
         }, 20000);
-
-        afterAll(async () => {
-
-        });
     });
 
     describe(`Security context`, () => {
@@ -99,10 +99,6 @@ describe(`LLM Agent E2E`, () => {
         it.todo('should NOT give out internal exception and stack trace', async () => {
 
         });
-
-        afterAll(async () => {
-
-        });
     });
 
     describe(`Helpful and conversational`, () => {
@@ -115,10 +111,6 @@ describe(`LLM Agent E2E`, () => {
         });
 
         it.todo('should be tool call analytic particularly for getExpenses', async () => {
-
-        });
-
-        afterAll(async () => {
 
         });
     });
