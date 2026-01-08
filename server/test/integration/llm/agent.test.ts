@@ -1,7 +1,9 @@
 import { HumanMessage } from "langchain";
 import { expenseTable } from '../../../src/db/schema/expenses.ts';
+import { aiExpenseView } from '../../../src/db/schema/ai_expense_view.ts';
 import { testDb, ExpenseAgent } from './agent.setup.ts';
 import { evaluateAgent } from "../utils/judge.ts";
+import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 describe(`LLM Agent E2E`, () => {
 
@@ -46,11 +48,17 @@ describe(`LLM Agent E2E`, () => {
 
             const agentResponse = result.messages.at(-1)!.content as string;
 
+            const viewConfig = getViewConfig(aiExpenseView);
+            const name = viewConfig.name;
+            const columns = Object.entries(viewConfig.selectedFields).map(([tsKey, col]: [string, any]) =>
+                `${col.name || tsKey} ${col.getSQLType() || col.dataType}`
+            );
+
             // We don't need a DB record check here, but we check the Judge
             // to see if the agent correctly listed the schema fields (e.g., amount, title)
             const evalResult = await evaluateAgent(
                 userInput,
-                null,
+                { name, columns },
                 agentResponse,
                 "Did the LLM extract fields and explained the user?"
             );
