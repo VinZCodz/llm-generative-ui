@@ -21,7 +21,9 @@ export const createExpenseTracker = ({ llm, tools, systemPrompt, checkpointer }:
 
     const shouldContinue = (state: typeof MessagesState.State) => {
         const lastMessage = state.messages.at(-1) as AIMessage;
-        return (lastMessage?.tool_calls?.length ?? 0) > 0 ? "toolNode" : "__end__";
+        return (lastMessage?.tool_calls?.length ?? 0) > 0
+            ? "toolNode"
+            : "__end__";
     };
 
     return new StateGraph(MessagesState)
