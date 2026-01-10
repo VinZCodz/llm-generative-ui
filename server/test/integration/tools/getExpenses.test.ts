@@ -31,7 +31,9 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
                 maxNumberOfRecords: 10
             };
 
-            const result = await tool.invoke(toolInput);
+            const response = await tool.invoke(toolInput);
+            const result = JSON.parse(response);
+
             console.log(result);
 
             // 3. Assert:
@@ -61,7 +63,9 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
                 query: "SELECT * FROM ai_expense_view",
                 maxNumberOfRecords: limit
             };
-            const result = await tool.invoke(toolInput);
+
+            const response = await tool.invoke(toolInput);
+            const result = JSON.parse(response);
 
             expect(Array.isArray(result)).toBe(true);
             expect(result).toHaveLength(limit);
@@ -81,9 +85,10 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
             ]);
 
             // 2. Act
-            const result = await tool.invoke({
+            const response = await tool.invoke({
                 query: "SELECT * FROM ai_expense_view"
             });
+            const result = JSON.parse(response);
 
             // 3. Assert: The view itself must have filtered the "Expired Entry"
             expect(result).toHaveLength(1);
@@ -107,9 +112,10 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
             await testDb.insert(expenseTable).values(seeds);
 
             // Act
-            const result = await tool.invoke({
+            const response = await tool.invoke({
                 query: "SELECT COUNT(*) as total_count, SUM(amount) as total_sum FROM ai_expense_view"
             });
+            const result = JSON.parse(response);
 
             // Assert
             const expectedSum = seeds.reduce((acc, curr) => acc + curr.amount, 0);
@@ -138,7 +144,8 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
                     `
             };
 
-            const result = await tool.invoke(toolInput);
+            const response = await tool.invoke(toolInput);
+            const result = JSON.parse(response);
 
             // Assert
             expect(result).toHaveLength(1);
@@ -163,7 +170,8 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
         `
             };
 
-            const result = await tool.invoke(toolInput);
+            const response = await tool.invoke(toolInput);
+            const result = JSON.parse(response);
 
             // 3. Assert
             expect(result).toHaveLength(2); // (A, B) and (B, A)
@@ -188,8 +196,6 @@ describe(`Integration Suite for tool: ${toolName} `, () => {
 
             // 2. Act
             const result = await tool.invoke(maliciousInput);
-
-            console.log(result.message);
 
             // 3. Assert: Verify the tool returns the constructive error string
             expect(result.status).toBe('error');

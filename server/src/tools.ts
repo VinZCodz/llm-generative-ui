@@ -36,7 +36,8 @@ export const initTools = (expenseService: ExpenseService) => {
             console.log("Select Query: ", { query, maxNumberOfRecords });//TODO: Use winston
 
             try {
-                return await expenseService.executeSelectQuery(query, maxNumberOfRecords);
+                const rows = await expenseService.executeSelectQuery(query, maxNumberOfRecords)
+                return JSON.stringify(rows);
             } catch (error) {
                 //Important! catch only validation errors so llm can regenerate the query.
                 if (error instanceof SQLValidationError) {

@@ -9,8 +9,8 @@ export const evaluateAgent = async (input: string, dbData: any, response: string
   const prompt = `
     Evaluate this AI Agent response based on the User Input and the Database Record.
 
-    Input: "${input}"
-    DB Record: ${JSON.stringify(dbData)}
+    Present Input: "${input}"
+    Present DB state: ${JSON.stringify(dbData)}
 
     Agent Response: "${response}"
 
