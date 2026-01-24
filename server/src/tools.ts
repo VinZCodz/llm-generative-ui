@@ -62,10 +62,33 @@ export const initTools = (expenseService: ExpenseService) => {
             }),
         });
 
+    const generateChart = tool(
+        async ({ fromDate, toDate, groupBy }) => {
+            const data = await expenseService.getExpensesByTimeInterval(fromDate, toDate, groupBy);
+            return {
+                data,
+                config: {
+                    xAxisKey: "period",
+                    yAxisKey: "totalAmount",
+                    interval: groupBy
+                }
+            };
+        },
+        {
+            name: "generateChart",
+            description: "Generates expense chart data between two dates with a specific grouping (day, month, or year).",
+            schema: z.object({
+                fromDate: z.string().describe("The start date in ISO format (YYYY-MM-DD)"),
+                toDate: z.string().describe("The end date in ISO format (YYYY-MM-DD)"),
+                groupBy: z.enum(["day", "month", "year"]).describe("How to aggregate the data"),
+            }),
+        });
+
     return [
         addExpense,
 
         getExpenseSchema,
         getExpenses,
+        generateChart
     ]
 }
