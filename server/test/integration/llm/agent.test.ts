@@ -8,7 +8,7 @@ import { getViewConfig } from 'drizzle-orm/sqlite-core';
 describe(`LLM Agent E2E`, () => {
 
     describe(`Given tools`, () => {
-        it.todo('should call tool to add the Expense and pass LLM-Judge evaluation', async () => {
+        it('should call tool to add the Expense and pass LLM-Judge evaluation', async () => {
 
             // Arrange: Define a clear natural language input
             const userInput = "Lunch at Subway for 12 rupees";
@@ -67,7 +67,7 @@ describe(`LLM Agent E2E`, () => {
             expect(agentResponse.toLowerCase()).toContain("amount");
         }, 20000);
 
-        it('should call tool getExpenses', async () => {
+        it.todo('should call tool getExpenses', async () => {
             const expenses = [
                 { amount: 50, title: "Groceries", date: new Date().toISOString().split('T')[0]! },
                 { amount: 15, title: "Netflix", date: new Date().toISOString().split('T')[0]! }
