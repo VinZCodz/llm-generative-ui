@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@vitest/coverage-v8": "4.0.16",
     "drizzle-kit": "^0.31.8",
     "vitest": "^4.0.16"
@@ -31,10 +33,14 @@
     "@langchain/groq": "^1.0.2",
     "@langchain/langgraph": "^1.0.5",
     "@libsql/client": "^0.15.15",
+    "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
     "langchain": "^1.2.1",
     "node-sql-parser": "^5.3.13",
+    "winston": "^3.19.0",
     "zod": "^4.2.1"
   }
 }
