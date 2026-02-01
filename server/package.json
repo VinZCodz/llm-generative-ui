@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "",
+    "dev": "cross-env NODE_ENV=dev bun --watch src/server.ts",
     "console": "bun test/consoleChat.ts",
     "test": "vitest",
     "test:tools": "vitest --project integration-tools",
@@ -21,6 +21,7 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/http-errors": "^2.0.5",
     "@vitest/coverage-v8": "4.0.16",
     "drizzle-kit": "^0.31.8",
     "vitest": "^4.0.16"
@@ -38,8 +39,10 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "http-errors": "^2.0.1",
     "langchain": "^1.2.1",
     "node-sql-parser": "^5.3.13",
+    "reflect-metadata": "^0.2.2",
     "winston": "^3.19.0",
     "zod": "^4.2.1"
   }
