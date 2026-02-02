@@ -4,7 +4,7 @@ import { ExpenseService } from '../../../src/services/ExpenseService.ts';
 import { SelectQueryGuard } from '../../../src/utils/SelectQueryGuard.ts';
 import { initTools } from '../../../src/tools.ts';
 import { inject } from 'vitest';
-import { createExpenseTracker } from '../../../src/expenseAgent.ts';
+import { expenseAgentGraphBuilder } from '../../../src/expenseAgent.ts';
 import { llm } from "../../../src/model.ts"
 import { SYSTEM_PROMPT } from "../../../src/prompt.ts"
 import { MemorySaver } from '@langchain/langgraph';
@@ -17,7 +17,7 @@ export const { testDb, testClient } = createLocalDbClient(dbName);
 const expenseService = new ExpenseService(testDb, testDb, new SelectQueryGuard());
 
 const tools = initTools(expenseService);
-export const ExpenseAgent = createExpenseTracker({ llm, tools, systemPrompt: SYSTEM_PROMPT, checkpointer: new MemorySaver() });
+export const ExpenseAgent = expenseAgentGraphBuilder({ llm, tools, systemPrompt: SYSTEM_PROMPT }).compile({ checkpointer: new MemorySaver() });
 
 // Lifecycle Management
 beforeEach(async () => {

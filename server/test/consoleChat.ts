@@ -1,6 +1,6 @@
 import * as readline from 'node:readline/promises';
 import { MemorySaver } from '@langchain/langgraph';
-import { createExpenseTracker } from "../src/expenseAgent.ts";
+import { expenseAgentGraphBuilder } from "../src/expenseAgent.ts";
 import { ExpenseService } from "../src/services/ExpenseService.ts";
 import * as client from "../src/db/client.ts";
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
@@ -17,7 +17,8 @@ const expenseService = new ExpenseService(
 );
 const tools = initTools(expenseService)
 
-const ExpenseTrackerAgent = createExpenseTracker({ llm, tools, systemPrompt: SYSTEM_PROMPT, checkpointer: new MemorySaver() });
+const agent = expenseAgentGraphBuilder({ llm, tools, systemPrompt: SYSTEM_PROMPT }).compile({ checkpointer: new MemorySaver() });
+
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
 const main = async () => {
@@ -28,7 +29,7 @@ const main = async () => {
         }
         const config = { configurable: { thread_id: "1" } };
 
-        const response = await ExpenseTrackerAgent.invoke({ messages: [{ role: "user", content: userPrompt }] }, config);
+        const response = await agent.invoke({ messages: [{ role: "user", content: userPrompt }] }, config);
         console.log(`Expense Tracker:\n${response.messages.at(-1)?.content}`);
     }
 }

@@ -5,7 +5,7 @@ import { MessagesState } from "./state";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import type { StructuredTool, ToolMessage } from "langchain";
 
-export const createExpenseTracker = ({ llm, tools, systemPrompt, checkpointer }: AgentDependencies) => {
+export const expenseAgentGraphBuilder = ({ llm, tools, systemPrompt }: AgentDependencies) => {
     const callModel = async (state: typeof MessagesState.State) => {
         const llmWithTools = llm.bindTools!(tools);
 
@@ -38,13 +38,11 @@ export const createExpenseTracker = ({ llm, tools, systemPrompt, checkpointer }:
         .addNode("toolNode", toolNode)
         .addEdge("__start__", "callModel")
         .addConditionalEdges("callModel", shouldCallTool)
-        .addConditionalEdges("toolNode", shouldCallModel)
-        .compile({ checkpointer });
+        .addConditionalEdges("toolNode", shouldCallModel);
 };
 
 export type AgentDependencies = {
     llm: BaseChatModel;
     tools: StructuredTool[];
     systemPrompt: string;
-    checkpointer: MemorySaver;
 };
