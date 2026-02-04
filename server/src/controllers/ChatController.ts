@@ -22,7 +22,6 @@ export class ChatController {
 
         const lastEventId = req.headers['last-event-id'] || 0;
         this.logger.info(`Resuming stream from ID: ${lastEventId}`);
-
         res.write(`event: init\n`);
         res.write(`data: Connection established\n\n`);
 
@@ -36,7 +35,30 @@ export class ChatController {
             });
 
         for await (const [event, chunk] of stream) {
-            let message = { type: 'ai', payload: chunk[0].content }
+            let message: StreamMessage;
+
+            switch (chunk[0].type) {
+                case 'ai':
+                    message = {
+                        type: 'ai',
+                        payload: { text: chunk[0].content as string }
+                    };
+                    break;
+                case 'tool':
+                    message = {
+                        type: 'tool',
+                        payload: { 
+                            name: chunk[0].name as string,
+                            result: chunk[0].lc_kwargs
+                        }
+                    };
+                    break;
+                default:
+                     message = {
+                        type: 'ai',
+                        payload: { text: "Something wrong with stream!" }
+                    };
+            }
 
             res.write(`event: ${event}\n`);
             res.write(`data: ${JSON.stringify(message)}\n\n}`)
