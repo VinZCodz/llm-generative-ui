@@ -22,8 +22,6 @@ export class ChatController {
 
         const lastEventId = req.headers['last-event-id'] || 0;
         this.logger.info(`Resuming stream from ID: ${lastEventId}`);
-        res.write(`event: init\n`);
-        res.write(`data: Connection established\n\n`);
 
         const stream = await this.agent.stream(
             {

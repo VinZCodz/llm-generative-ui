@@ -4,13 +4,14 @@ import { Header } from "@/components/Header";
 import { ChatBubble } from "@/components/ChatBubble";
 import { ChatInput } from "@/components/ChatInput";
 import { SuggestionCard } from "@/components/SuggestionCard";
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 export default function Chat() {
-    const [messages, setMessages] = useState([{ role: "assistant", content: `Welcome! How can I help you today?` }]);
+    const [messages, setMessages] = useState<StreamMessage[]>([{ id: Date.now().toString(), type: "ai", payload: { text: `Welcome! How can I help you today?` } }]);
     const [input, setInput] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Robust Auto-scroll
+    // Auto-scroll
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -19,23 +20,65 @@ export default function Chat() {
         scrollToBottom();
     }, [messages]); // Fires every time messages array changes
 
-    const handleSend = (e: React.FormEvent) => {
+    const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim()) return;
 
         // Add user message
-        const newMsg = { role: "user", content: input };
-        setMessages(prev => [...prev, newMsg]);
+        setMessages(prev => [...prev, { id: Date.now().toString(), type: "user", payload: { text: input } }])
         setInput("");
 
-        // Mock an agentic response after a delay
-        setTimeout(() => {
-            setMessages(prev => [...prev, {
-                role: "assistant",
-                content: "I've processed that request. Your Drizzle database has been updated.",
-                toolCall: true
-            }]);
-        }, 1000);
+        const threadId = '1'; //TODO: need robust dynamic implementation. 
+        await fetchSSE(input, threadId);
+    };
+
+    const fetchSSE = async (input: string, threadId: string) => {
+        await fetchEventSource('http://127.0.0.1:3001/chat/stream', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'text/event-stream'
+            },
+            body: JSON.stringify({ input, threadId }),
+
+            async onopen(response) {
+                if (response.ok) return; // Connection success
+                console.error("Server error:", response.status);
+            },
+            onmessage(msg) {
+                updateServerMessages(JSON.parse(msg.data));
+            },
+            onerror(err) {
+                console.error("Stream failed:", err);
+                throw err; // Re-throws to trigger auto-retry logic
+            }
+        });
+    }
+
+    const updateServerMessages = (message: StreamMessage) => {
+        if (message.type === 'ai') {
+            setMessages(prev => {
+                const lastMessage = prev.at(-1);
+
+                if (lastMessage && lastMessage.type === 'ai') {
+                    const clonedMsgs = [...prev];
+                    clonedMsgs[clonedMsgs.length - 1] = {
+                        ...lastMessage,
+                        payload: {
+                            text: lastMessage.payload.text + message.payload.text
+                        }
+                    }
+                    return clonedMsgs;
+                }
+                else {
+                    return [...prev, {
+                        id: Date.now().toString(),
+                        type: "ai",
+                        payload: message.payload
+                    }]
+                }
+            });
+        }
     };
 
     return (
@@ -46,8 +89,8 @@ export default function Chat() {
                 <div className="max-w-3xl mx-auto px-4">
                     <SuggestionCard messageCount={messages.length} onClick={(text) => setInput(text)} />
 
-                    {messages.map((m, i) => (
-                        <ChatBubble key={i} message={m} />
+                    {messages!.map((m, i) => (
+                        <ChatBubble key={m.id} message={m} />
                     ))}
                     <div ref={messagesEndRef} className="h-4" />
                 </div>
