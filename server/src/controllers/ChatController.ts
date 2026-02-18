@@ -28,38 +28,40 @@ export class ChatController {
                 messages: [{ role: "user", content: req.body.input }]
             },
             {
-                streamMode: ['messages'],
+                streamMode: ['messages', 'custom'],
                 configurable: { thread_id: req.body.threadId }
             });
 
         for await (const [event, chunk] of stream) {
             let message: StreamMessage;
 
-            switch (chunk[0].type) {
-                case 'ai':
-                    message = {
-                        type: 'ai',
-                        payload: { text: chunk[0].content as string }
-                    };
+            switch (event) {
+                case 'custom':
+                    message = chunk;
                     break;
-                case 'tool':
-                    message = {
-                        type: 'tool',
-                        payload: { 
-                            name: chunk[0].name as string,
-                            result: chunk[0].lc_kwargs
-                        }
-                    };
-                    break;
-                default:
-                     message = {
-                        type: 'ai',
-                        payload: { text: "Something wrong with stream!" }
-                    };
+
+                case 'messages':
+                    switch (chunk[0].type) {
+                        case 'ai':
+                            message = {
+                                type: 'ai',
+                                payload: { text: chunk[0].content as string }
+                            };
+                            break;
+                        case 'tool':
+                            message = {
+                                type: 'tool',
+                                payload: {
+                                    name: chunk[0].name as string,
+                                    result: chunk[0].lc_kwargs
+                                }
+                            };
+                            break;
+                    }
             }
 
             res.write(`event: ${event}\n`);
-            res.write(`data: ${JSON.stringify(message)}\n\n}`)
+            res.write(`data: ${JSON.stringify(message!)}\n\n}`)
         }
         res.end();
     }
