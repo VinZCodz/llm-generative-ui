@@ -53,7 +53,7 @@ export class ChatController {
                                 type: 'tool',
                                 payload: {
                                     name: chunk[0].name as string,
-                                    result: chunk[0].lc_kwargs
+                                    result: JSON.parse(chunk[0].content as string)
                                 }
                             };
                             break;
