@@ -7,7 +7,7 @@ import { SuggestionCard } from "@/components/SuggestionCard";
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 export default function Chat() {
-    const [messages, setMessages] = useState<StreamMessage[]>([{ id: Date.now().toString(), type: "ai", payload: { text: `Welcome! How can I help you today?` } }]);
+    const [messages, setMessages] = useState<StreamMessage[]>([{ id: crypto.randomUUID(), type: "ai", payload: { text: `Welcome! How can I help you today?` } }]);
     const [input, setInput] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +25,7 @@ export default function Chat() {
         if (!input.trim()) return;
 
         // Add user message
-        setMessages(prev => [...prev, { id: Date.now().toString(), type: "user", payload: { text: input } }])
+        setMessages(prev => [...prev, { id: crypto.randomUUID(), type: "user", payload: { text: input } }])
         setInput("");
 
         const threadId = '1'; //TODO: need robust dynamic implementation. 
@@ -40,7 +40,6 @@ export default function Chat() {
                 'Accept': 'text/event-stream'
             },
             body: JSON.stringify({ input, threadId }),
-
             async onopen(response) {
                 if (response.ok) return; // Connection success
                 console.error("Server error:", response.status);
@@ -55,29 +54,33 @@ export default function Chat() {
         });
     }
 
+    //TODO: Optimize this logic.
     const updateServerMessages = (message: StreamMessage) => {
-        if (message.type === 'ai') {
-            setMessages(prev => {
-                const lastMessage = prev.at(-1);
+        switch (message.type) {
+            case 'ai':
+                setMessages(prev => {
+                    const lastMessage = prev.at(-1);
 
-                if (lastMessage && lastMessage.type === 'ai') {
-                    const clonedMsgs = [...prev];
-                    clonedMsgs[clonedMsgs.length - 1] = {
-                        ...lastMessage,
-                        payload: {
-                            text: lastMessage.payload.text + message.payload.text
+                    if (lastMessage && lastMessage.type === 'ai') {
+                        const clonedMsgs = [...prev];
+                        clonedMsgs[clonedMsgs.length - 1] = {
+                            ...lastMessage,
+                            payload: {
+                                text: lastMessage.payload.text + message.payload.text
+                            }
                         }
+                        return clonedMsgs;
                     }
-                    return clonedMsgs;
-                }
-                else {
-                    return [...prev, {
-                        id: Date.now().toString(),
-                        type: "ai",
-                        payload: message.payload
-                    }]
-                }
-            });
+                    else
+                        return [...prev, { id: crypto.randomUUID(), type: message.type, payload: message.payload }]
+                });
+                break;
+            case 'toolCall:start':
+                setMessages(prev => [...prev, { id: crypto.randomUUID(), type: message.type, payload: message.payload }]);
+                break;
+            case 'tool':
+                setMessages(prev => [...prev, { id: crypto.randomUUID(), type: message.type, payload: message.payload }]);
+                break;
         }
     };
 

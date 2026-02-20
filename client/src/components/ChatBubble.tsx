@@ -1,12 +1,12 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Bot, User, Toolbox } from "lucide-react";
+import { Bot, User, Toolbox, CheckCircle2, CheckCheckIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 
 export const ChatBubble = memo(({ message }: { message: StreamMessage }) => {
   const { type, payload } = message;
-  const isIncoming = type === "ai" || type === "toolCall:start";
+  const isIncoming = type === "ai" || type === "toolCall:start" || type === "tool";
   const isConversation = type === "ai" || type === "user";
 
   return (
@@ -53,8 +53,8 @@ export const ChatBubble = memo(({ message }: { message: StreamMessage }) => {
 
               <div className="items-center gap-2">
                 {Object.keys(payload.args).length !== 0 && (
-                  <div className="items-center gap-1.5 px-2 py-0.5 rounded-md bg-purple-500/20 border border-purple-400/50">
-                    <div className="prose prose-invert prose-purple text-[11px] font-mono leading-tight">
+                  <div className="items-center gap-1.5 px-2 py-0.5 rounded-md">
+                    <div className="prose prose-invert prose-purple text-[11px] font-mono leading-tight bg-black/20 p-2 rounded border border-zinc-800/50">
                       <ReactMarkdown
                         components={{
                           strong: ({ node, ...props }) => <span className="text-purple-400 font-bold" {...props} />,
@@ -66,9 +66,37 @@ export const ChatBubble = memo(({ message }: { message: StreamMessage }) => {
                           .join('  \n')}
                       </ReactMarkdown>
                     </div>
-
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {type === 'tool' && (
+            <div className="flex flex-col p-3 rounded-xl ml-11 bg-green-900/10 border border-green-500/30 w-fit min-w-[220px]">
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 size={12} className="text-green-400 animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-green-400 font-bold">Tool Result:</span>
+              </div>
+
+              <div className="space-y-2">
+                {Array.isArray(payload.result) ?
+                  (
+                    <div className="flex items-center px-2 py-1 rounded-md bg-green-500/20 border border-green-400/50 w-fit">
+                      <span className="text-[11px] font-mono text-green-300 font-bold flex items-center">
+                        Returned {payload.result.length} Rows
+                      </span>
+                    </div>
+                  ) :
+                  (
+                    <div className="prose prose-invert prose-green text-[11px] font-mono leading-tight bg-black/20 p-2 rounded border border-zinc-800/50">
+                      <ReactMarkdown>
+                        {typeof payload.result === 'object'
+                          ? JSON.stringify(payload.result, null, 2)
+                          : String(payload.result)}
+                      </ReactMarkdown>
+                    </div>
+                  )}
               </div>
             </div>
           )}
