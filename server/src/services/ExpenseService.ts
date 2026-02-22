@@ -49,8 +49,8 @@ export class ExpenseService {
 
         return await this.roDB
             .select({
-                period: period,
-                totalAmount: sql<number>`sum(${expenseView.aiExpenseView.amount})`.mapWith(Number),
+                period,
+                totalExpense: sql<number>`sum(${expenseView.aiExpenseView.amount})`.mapWith(Number),
             })
             .from(expenseView.aiExpenseView)
             .where(between(expenseView.aiExpenseView.date, fromDate, toDate))

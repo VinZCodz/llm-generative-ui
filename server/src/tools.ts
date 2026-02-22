@@ -65,14 +65,11 @@ export const initTools = (expenseService: ExpenseService) => {
     const generateChart = tool(
         async ({ fromDate, toDate, groupBy }) => {
             const data = await expenseService.getExpensesByTimeInterval(fromDate, toDate, groupBy);
-            return {
+            return JSON.stringify({
+                type: 'chart',
                 data,
-                config: {
-                    xAxisKey: "period",
-                    yAxisKey: "totalAmount",
-                    interval: groupBy
-                }
-            };
+                interval: groupBy
+            });
         },
         {
             name: "generateChart",
