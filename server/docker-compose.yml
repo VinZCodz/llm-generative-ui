@@ -1,18 +1,14 @@
 services:
   ai-expense-chat-server:
-    image: ai-expense-chat-server:v1.0.0
-    container_name: ai-expense-chat-server-v1.0.0
+    image: ghcr.io/vinzcodz/ai-expense-chat-server:latest
+    container_name: ai-expense-chat-server
     restart: unless-stopped
 
-    build:
-      context: .
-      dockerfile: Dockerfile
-
     ports:
-      - "3001:3001"
+      - 3001:3001
 
     env_file:
       - .env
 
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=dev
