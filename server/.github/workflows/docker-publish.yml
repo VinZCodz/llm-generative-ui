@@ -1,0 +1,70 @@
+name: Build and Push Docker Image
+
+on:
+  # Automated Trigger: Only on changes to the server directory
+  push: 
+    branches: [ "main" ]
+    paths:
+      # Include Pattern
+      - 'main/server/**' 
+
+      # EXCLUDE Patterns
+      - '!main/server/migrations/**'
+      - '!main/server/test/**'
+      - '!main/server/**/**.env.*'
+      - '!main/server/.gitignore'   
+      - '!main/server/**/*.md'     
+      - '!main/server/vitest.config.ts'
+
+  # Manual Trigger: On-demand from the Actions tab
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag (e.g., v1.0.1 or latest)'
+        required: true
+        default: 'latest'
+
+jobs:
+  # Validate before: preventing a "broken" image from ever being pushed to the registry.
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        working-directory: ./main/server
+        run: bun install --frozen-lockfile
+
+      - name: Type Check
+        working-directory: ./main/server
+        run: bun x tsc --noEmit # Ensures no TypeScript errors
+
+  build:
+      needs: validate
+
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Log in to GHCR
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Build and push
+          uses: docker/build-push-action@v5
+          with:
+            context: ./main/server
+            push: true
+            tags: |
+              ghcr.io/${{ github.repository_owner }}/ai-expense-chat-server:${{ github.event.inputs.tag || 'latest' }}
