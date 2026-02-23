@@ -8,13 +8,19 @@ import { getViewConfig } from 'drizzle-orm/sqlite-core';
 
 export class ExpenseService {
     private readonly viewConfig;
+    private readonly db: LibSQLDatabase<typeof expense>;
+    private readonly roDB: LibSQLDatabase<typeof expense>;
+    private readonly validator: SelectQueryGuard;
 
     constructor(
-        private readonly db: LibSQLDatabase<typeof expense>,
-        private readonly roDB: LibSQLDatabase<typeof expense>,
-        private readonly validator: SelectQueryGuard
+        db: LibSQLDatabase<typeof expense>,
+        roDB: LibSQLDatabase<typeof expense>,
+        validator: SelectQueryGuard
     ) {
         this.viewConfig = getViewConfig(expenseView.aiExpenseView);
+        this.db = db;
+        this.roDB = roDB;
+        this.validator = validator;
     }
 
     public async add(data: expense.InsertExpense) {
