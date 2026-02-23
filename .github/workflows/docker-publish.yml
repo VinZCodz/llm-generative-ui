@@ -6,7 +6,7 @@ on:
     branches: [ "main" ]
     paths:
       # Include Pattern
-      - '/server/**' 
+      - './server/**' 
 
       # # EXCLUDE Patterns
       # - '!main/server/migrations/**'
@@ -38,11 +38,11 @@ jobs:
         run: ls -R
 
       - name: Install Dependencies
-        working-directory: /server
+        working-directory: ./server
         run: bun install --frozen-lockfile
 
       - name: Type Check
-        working-directory: /server
+        working-directory: ./server
         run: bun x tsc --noEmit # Ensures no TypeScript errors
 
   build:
