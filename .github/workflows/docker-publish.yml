@@ -35,11 +35,11 @@ jobs:
           bun-version: latest
 
       - name: Install Dependencies
-        working-directory: ./main/server
+        working-directory: /main/server
         run: bun install --frozen-lockfile
 
       - name: Type Check
-        working-directory: ./main/server
+        working-directory: /main/server
         run: bun x tsc --noEmit # Ensures no TypeScript errors
 
   build:
