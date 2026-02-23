@@ -6,15 +6,15 @@ on:
     branches: [ "main" ]
     paths:
       # Include Pattern
-      - 'main/server/**' 
+      - '/server/**' 
 
-      # EXCLUDE Patterns
-      - '!main/server/migrations/**'
-      - '!main/server/test/**'
-      - '!main/server/**/**.env.*'
-      - '!main/server/.gitignore'   
-      - '!main/server/**/*.md'     
-      - '!main/server/vitest.config.ts'
+      # # EXCLUDE Patterns
+      # - '!main/server/migrations/**'
+      # - '!main/server/test/**'
+      # - '!main/server/**/**.env.*'
+      # - '!main/server/.gitignore'   
+      # - '!main/server/**/*.md'     
+      # - '!main/server/vitest.config.ts'
 
   # Manual Trigger: On-demand from the Actions tab
   workflow_dispatch:
@@ -34,12 +34,15 @@ jobs:
         with:
           bun-version: latest
 
+      - name: List files to verify path
+        run: ls -R
+
       - name: Install Dependencies
-        working-directory: /main/server
+        working-directory: /server
         run: bun install --frozen-lockfile
 
       - name: Type Check
-        working-directory: /main/server
+        working-directory: /server
         run: bun x tsc --noEmit # Ensures no TypeScript errors
 
   build:
@@ -64,7 +67,7 @@ jobs:
         - name: Build and push
           uses: docker/build-push-action@v5
           with:
-            context: ./main/server
+            context: ./server
             push: true
             tags: |
               ghcr.io/${{ github.repository_owner }}/ai-expense-chat-server:${{ github.event.inputs.tag || 'latest' }}
