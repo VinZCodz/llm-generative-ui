@@ -27,7 +27,7 @@ appConfig:
   NODE_ENV: "production"
 
 # Externalize Secrets: Sensitive applications Secrets
-secretName: "ai-expense-chat-secrets"
+existingSecretName: "ai-expense-chat-secrets"
 
 # -----------------Touched Till------------------------- #
 
