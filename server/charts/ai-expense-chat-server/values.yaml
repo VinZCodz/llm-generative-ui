@@ -11,7 +11,8 @@ image:
   # This sets the pull policy for images.
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+
+  # tag: "latest" # Comment and make the tag empty, coz, CI/CD pipeline will "stamp" the version onto the chart during the packaging phase, .Chart.AppVersion should win!
 
 # This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
