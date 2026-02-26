@@ -13,6 +13,24 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  type: ClusterIP
+  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  port: 3001
+
+# Internalize Config: Non-sensitive Application Config
+appConfig:
+  TZ: "Asia/Calcutta"
+  PORT: "3001"
+  NODE_ENV: "production"
+
+# Externalize Secrets: Sensitive applications Secrets
+secretName: "ai-expense-chat-secrets"
+
+# -----------------Touched Till------------------------- #
+
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 # This is to override the chart name.
@@ -48,13 +66,6 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
-service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-  type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-  port: 3001
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -159,10 +170,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-
-# Non-sensitive Application Config
-appConfig:
-  TZ: "Asia/Calcutta"
-  PORT: "3001"
-  NODE_ENV: "production"
