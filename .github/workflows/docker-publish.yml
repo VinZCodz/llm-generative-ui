@@ -17,6 +17,7 @@ on:
       - '!server/.gitignore'   
       - '!server/**/*.md'     
       - '!server/vitest.config.ts'
+      - '!server/charts/**'
 
   # Manual Trigger: On-demand from the Actions tab
   workflow_dispatch:
