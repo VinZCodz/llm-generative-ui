@@ -159,3 +159,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+# Non-sensitive Application Config
+appConfig:
+  TZ: "Asia/Calcutta"
+  PORT: "3001"
+  NODE_ENV: "production"

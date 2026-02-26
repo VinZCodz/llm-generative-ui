@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ai-expense-chat-server.fullname" . }}-config
+data:
+  {{- range $key, $val := .Values.appConfig }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
