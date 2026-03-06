@@ -11,6 +11,8 @@ export default function Chat() {
     const [input, setInput] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    const chatUrl = process.env.NEXT_PUBLIC_CHAT_API_URL;
+
     // Auto-scroll
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -33,7 +35,7 @@ export default function Chat() {
     };
 
     const fetchSSE = async (input: string, threadId: string) => {
-        await fetchEventSource('http://127.0.0.1:3001/chat/stream', {
+        await fetchEventSource(chatUrl!, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
