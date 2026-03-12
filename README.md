@@ -55,7 +55,10 @@ With due emphasis on using **Software Development Best Practices like:**
   - Automated validation of DB schemas and connection resilience.
 
 ### Coverage Report
+
+<p align="center">
 <img width="900" height="500" alt="Test" src="https://github.com/user-attachments/assets/9b72ee44-791d-4bcd-aaf9-a7d099c89cad" />
+</p>
 
 ## DevOps | Cloud-Native IaC
 - **Docker (Multi-stage) & GitHub Actions:**
