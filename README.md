@@ -34,6 +34,10 @@ With due emphasis on using **Software Development Best Practices like:**
 - **Bun + Express (SSE):**
   - High-speed TypeScript runtime delivering Server-Sent Events for real-time streaming of the agent’s internal state transitions.
 
+<p align="center">
+<img width="900" height="700" alt="image" src="https://github.com/user-attachments/assets/aa11a846-432b-46ee-a893-9c9978593ab4" />
+</p>
+
 ## Persistence & DB Layer
 - **Turso DB (LibSQL):**
   - A DB-first approach using SQLite at the edge for ultra-low latency state hydration and global distribution.
