@@ -110,6 +110,8 @@ Alongside this application, I have released several foundational templates that 
   
 - [✅ Production-Grade Agentic AI Implementation Checklist](https://gist.github.com/VinZCodz/dacc4ae72d8ebd96dd0b5c4ff819dea6): This checklist is designed for a Senior and Lead Engineers to use as a technical implementation roadmap. It follows a clean separation of concerns, ensuring the agent is a testable, injectable service rather than a script.
 
+- [✅ Agentic TDD: The Red-to-Green Workflow](https://gist.github.com/VinZCodz/c3f605dac2ad8ac83f67088eb5d2f05c): This checklist is for building Tests for production-grade AI Agentic systems.
+
 # 🎬 **The "Bottom Line"**
 
 **Building the agent is 20% of the work. The other 80% is the infrastructure that makes it reliable, observable, and fast.**
